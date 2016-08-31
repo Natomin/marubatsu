@@ -44,6 +44,7 @@ public class MarubatsuFrame extends JFrame {
 					public void actionPerformed(ActionEvent e) {
 						marubatsu.player(x, y);// Event発生時の処理
 						update();//Marubatsuで管理している盤状態を反映
+						playerlabel();
 					}
 				});
 				this.add(buttons[i][j]);
