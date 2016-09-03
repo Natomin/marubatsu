@@ -15,9 +15,9 @@ public class MarubatsuFrame extends JFrame {
 	public static final int BOARD_SIZE = 3;
 	public  JButton[][] buttons = new JButton[BOARD_SIZE][BOARD_SIZE];
 	private  JLabel label = new JLabel();
-	public  int[][] buttonfrag = new int[BOARD_SIZE][BOARD_SIZE];
+	public  int[][] buttonflag = new int[BOARD_SIZE][BOARD_SIZE];
 	private Marubatsu marubatsu;
-
+	
 	// コンストラクタ
 	public MarubatsuFrame() {
 		marubatsu = new Marubatsu();
@@ -34,7 +34,7 @@ public class MarubatsuFrame extends JFrame {
 				buttons[i][j] = new JButton(); // ボタン生成
 				buttons[i][j].setBounds(i * BUTTON_SIZE, j * BUTTON_SIZE,
 						BUTTON_SIZE, BUTTON_SIZE);
-				buttonfrag[i][j] = Marubatsu.NONE; // buttonfragの初期化
+				buttonflag[i][j] = Marubatsu.NONE; // buttonflagの初期化
 
 				final int x = i;
 				final int y = j;
@@ -42,7 +42,7 @@ public class MarubatsuFrame extends JFrame {
 				buttons[i][j].addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						marubatsu.player(x, y);// Event発生時の処理
+						marubatsu.putPiece(x, y);// Event発生時の処理
 						update();//Marubatsuで管理している盤状態を反映
 						playerlabel();
 					}
