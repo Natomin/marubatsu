@@ -1,7 +1,6 @@
 package marubatsu;
 import gui.MarubatsuFrame;
 
-import java.awt.Font;
 
 public class Marubatsu {
 	public static final int NONE = 0;

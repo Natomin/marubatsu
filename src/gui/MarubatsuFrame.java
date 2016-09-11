@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import marubatsu.Marubatsu;
+import socket.ServerRunnable;
 
 public class MarubatsuFrame extends JFrame {
 	public static final int BUTTON_SIZE = 120;
@@ -17,10 +18,27 @@ public class MarubatsuFrame extends JFrame {
 	private  JLabel label = new JLabel();
 	public  int[][] buttonflag = new int[BOARD_SIZE][BOARD_SIZE];
 	private Marubatsu marubatsu;
+//(server)
+	private ServerRunnable serverRun;
+//(client)
+//	private ClientRunnable clientRun;
+	private Thread subThread;
+	private int a,b;
 	
 	// コンストラクタ
 	public MarubatsuFrame() {
 		marubatsu = new Marubatsu();
+		serverRun = new ServerRunnable();
+//(server)
+		//サブスレッドでserverのrunメソッドを動かす
+		subThread = new Thread(serverRun);
+		subThread.start();
+//(client)
+//		サブスレッドでclientのrunメソッドを動かす
+//		subThread = new Thread(clientRun);
+//		subThread.start();
+		
+		
 		// frameの設定
 		this.setBounds(50, 50, 375, 450);
 		this.setLayout(null);
@@ -43,8 +61,41 @@ public class MarubatsuFrame extends JFrame {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						marubatsu.putPiece(x, y);// Event発生時の処理
+//(server)
+						serverRun.setPutPlace(x, y);
+						serverRun.setCatchFlag(0);
+//(client)
+//						clientRun.setPutPlace(x, y);
+//						clientRun.catchFlag = 0;
+						
 						update();//Marubatsuで管理している盤状態を反映
 						playerlabel();
+//(server)
+						while(serverRun.getCatchFlag() == 0){
+							//待機用のループ
+						}
+//(client)
+//						while(clientRun.catchFlag == 0){
+//							//待機用のループ
+//						}
+						
+//(server)
+						if(serverRun.getCatchFlag() == 1){//相手から盤情報を受信
+							a = serverRun.getX();
+							b = serverRun.getY();
+							System.out.println("a=" + a + ", b=" + b);//デバッグ用
+							marubatsu.putPiece(a, b);
+							update();
+							playerlabel();
+						}
+//(client)
+//						if(clientRun.catchFlag == 1){//相手から盤情報を受信
+//							a = clientRun.getX();
+//							b = clientRun.getY();
+//							marubatsu.putPiece(a, b);
+//							update();
+//							playerlabel();
+//						}
 					}
 				});
 				this.add(buttons[i][j]);
@@ -52,7 +103,22 @@ public class MarubatsuFrame extends JFrame {
 		}
 		update();
 		playerlabel();
+//		while(serverRun.catchFlag == 0){
+//			//待機用のループ
+//		}
+		//コメント外すとguiが出ない→コンストラクタが終わらないから（？）
+//(server)↓これだと相手がボタン入力する前だからダメそう（flagは初期状態の0のままだからif文の中に入らない）
+		if(serverRun.getCatchFlag() == 1){//相手から盤情報を受信
+			a = serverRun.getX();
+			b = serverRun.getY();
+			marubatsu.putPiece(a, b);
+		}
+		update();
+		playerlabel();
+//(client)
+//先に入力だからここは何も書かない
 	}
+	
 
 	// プレイヤーをラベルに表示
 	public void playerlabel() {
