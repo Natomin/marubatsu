@@ -47,6 +47,11 @@ public class ClientReaderRunnable implements Runnable{
 				e.printStackTrace();
 			} 
 			if(line.equals("¥¥q")){break;}
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 		try {
 			socket.close();
