@@ -45,6 +45,11 @@ public class ServerReaderRunnable implements Runnable {
 				break;
 			}
 
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 
 	}

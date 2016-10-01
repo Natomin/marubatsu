@@ -40,7 +40,7 @@ public class ServerWriterRunnable implements Runnable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		//readerのsubThread開始
+		// readerのsubThread開始
 		readerThread = new Thread(new ServerReaderRunnable(socket, frame));
 		readerThread.start();
 		// writer生成
@@ -50,17 +50,22 @@ public class ServerWriterRunnable implements Runnable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		while (true) {
-		String input = null;
-		input = String.valueOf(x);
-		writer.println(input);
-		input = String.valueOf(y);
-		writer.println(input);
-		if (input.equals("¥¥q")) {
-			break;
+			String input = null;
+			input = String.valueOf(x);
+			writer.println(input);
+			input = String.valueOf(y);
+			writer.println(input);
+			if (input.equals("¥¥q")) {
+				break;
+			}
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
-	}
 
 		try {
 			socket.close();
@@ -77,5 +82,5 @@ public class ServerWriterRunnable implements Runnable {
 	public void setPutPlace(int a, int b) {
 		x = a;
 		y = b;
-	}	
+	}
 }
