@@ -10,8 +10,7 @@ import javax.swing.JLabel;
 
 import marubatsu.Marubatsu;
 //import socket.ServerRunnable;
-import socket.ClientReaderRunnable;
-import socket.ClientWriterRunnable;
+import socket.ClientSocketRunnable;
 
 public class MarubatsuFrame extends JFrame{
 	public static final int BUTTON_SIZE = 120;
@@ -21,14 +20,10 @@ public class MarubatsuFrame extends JFrame{
 	public  int[][] buttonflag = new int[BOARD_SIZE][BOARD_SIZE];
 	private Marubatsu marubatsu;
 	private int a,b;
-	private ClientWriterRunnable writerRunnable;
+	private ClientSocketRunnable clientRun;
 	
 	public MarubatsuFrame() {// コンストラクタ
 		marubatsu = new Marubatsu(this);
-//		サブスレッドでclientのrunメソッドを動かす
-		Thread writer = new Thread(writerRunnable = new ClientWriterRunnable(this));
-		writer.start();
-		
 		// frameの設定
 		this.setBounds(50, 50, 375, 450);
 		this.setLayout(null);
@@ -51,8 +46,9 @@ public class MarubatsuFrame extends JFrame{
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						marubatsu.putPiece(Marubatsu.BATSU, x, y);// Event発生時の処理
-						writerRunnable.setPutPlace(x, y);
-						update();//Marubatsuで管理している盤状態を反映
+						clientRun.setPutPlace(x, y);
+						clientRun.write();
+//						update();
 						playerlabel();
 					}
 				});
@@ -61,6 +57,10 @@ public class MarubatsuFrame extends JFrame{
 		}
 		update();
 		playerlabel();
+//		サブスレッドでclientのrunメソッドを動かす
+		Thread subThread = new Thread(clientRun = new ClientSocketRunnable(this));
+		subThread.start();
+		
 	}
 
 	// プレイヤーをラベルに表示

@@ -9,7 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import marubatsu.Marubatsu;
-import socket.ServerWriterRunnable;
+import socket.ServerSocketRunnable;
 
 public class MarubatsuFrame extends JFrame {
 	public static final int BUTTON_SIZE = 120;
@@ -18,7 +18,7 @@ public class MarubatsuFrame extends JFrame {
 	private JLabel label = new JLabel();
 	public int[][] buttonflag = new int[BOARD_SIZE][BOARD_SIZE];
 	private Marubatsu marubatsu;
-	private ServerWriterRunnable serverRun;
+	private ServerSocketRunnable serverRun;
 	private Thread subThread;
 	private int a, b;
 
@@ -47,6 +47,7 @@ public class MarubatsuFrame extends JFrame {
 					public void actionPerformed(ActionEvent e) {
 						marubatsu.putPiece(Marubatsu.MARU, x, y);// Event発生時の処理
 						serverRun.setPutPlace(x, y);
+						serverRun.write();
 						playerlabel();
 					}
 				});
@@ -56,7 +57,7 @@ public class MarubatsuFrame extends JFrame {
 		update();
 		playerlabel();
 		// サブスレッドでserverのrunメソッドを動かす
-		subThread = new Thread(serverRun = new ServerWriterRunnable(this));
+		subThread = new Thread(serverRun = new ServerSocketRunnable(this));
 		subThread.start();
 	}
 
